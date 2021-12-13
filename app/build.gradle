@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion as int
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  defaultConfig {
+    applicationId "com.vanniktech.emoji.sample"
+    minSdkVersion rootProject.ext.minSdkVersion as int
+    targetSdkVersion rootProject.ext.targetSdkVersion as int
+    versionCode rootProject.ext.versionCode as int
+    versionName rootProject.ext.versionName as String
+
+    vectorDrawables.useSupportLibrary = true
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  archivesBaseName = "app-$versionName"
+
+  def shouldSign = project.hasProperty('RELEASE_STORE_FILE') && project.hasProperty('RELEASE_STORE_PASSWORD') && project.hasProperty('RELEASE_KEY_ALIAS') && project.hasProperty('RELEASE_KEY_PASSWORD')
+
+  if (shouldSign) {
+    signingConfigs {
+      release {
+        // http://stackoverflow.com/a/21020469/1979703
+        storeFile file(RELEASE_STORE_FILE)
+        storePassword RELEASE_STORE_PASSWORD
+        keyAlias RELEASE_KEY_ALIAS
+        keyPassword RELEASE_KEY_PASSWORD
+      }
+    }
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+      shrinkResources true
+      zipAlignEnabled true
+
+      if (shouldSign) {
+        signingConfig signingConfigs.release
+      }
+    }
+  }
+}
+
+dependencies {
+  implementation project(':emoji-ios')
+  implementation project(':emoji-google')
+  implementation project(':emoji-google-compat')
+  implementation project(':emoji-twitter')
+  implementation project(':emoji-facebook')
+  implementation project(':emoji-kotlin')
+  implementation project(':emoji-material')
+  implementation "androidx.recyclerview:recyclerview:1.2.1"
+}
+
+dependencies {
+  debugImplementation "com.squareup.leakcanary:leakcanary-android:2.4"
+}
+
+dependencies {
+  androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+  androidTestImplementation "androidx.test:rules:1.4.0-rc01"
+  androidTestImplementation "androidx.test.ext:junit:1.1.3-rc01"
+  androidTestImplementation "tools.fastlane:screengrab:2.0.0"
+}

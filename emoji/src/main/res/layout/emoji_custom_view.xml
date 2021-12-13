@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="311dp"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/emoji_background_dialog"
+    >
+  <LinearLayout
+      android:id="@+id/emojiViewTab"
+      android:layout_width="match_parent"
+      android:layout_height="32dp"
+      android:layout_marginTop="8dp"
+      android:paddingLeft="12dp"
+      android:paddingRight="12dp"
+      android:orientation="horizontal"
+      />
+  <View
+      android:id="@+id/emojiViewDivider"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:layout_marginLeft="12dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginRight="12dp"
+      android:background="#1fffffff" />
+  <androidx.viewpager.widget.ViewPager
+      android:layout_marginTop="8dp"
+      android:id="@+id/emojiViewPager"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+</LinearLayout>

@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion as int
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdkVersion as int
+  }
+
+  resourcePrefix 'emoji'
+}
+
+dependencies {
+  api project(':emoji')
+}
+
+dependencies {
+  testImplementation rootProject.ext.testing.junit
+  testImplementation rootProject.ext.testing.assertJ
+}
+
+//apply plugin: "com.vanniktech.maven.publish"
+def getVersionName = { ->
+  return "0.0.1" // 仓库版本
+}
+
+def getArtificatId = { ->
+  return "emoji-ios" // 仓库Id
+}
+
+publishing {
+  publications {
+    bar(MavenPublication) {
+      groupId 'app.cybrook.emoji' // 仓库组Id
+      artifactId getArtificatId()
+      version getVersionName()
+      artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
+    }
+  }
+
+  repositories {
+    maven {
+      name = "customRepo"
+      url = uri("https://maven.pkg.github.com/cybrook/teamlink-next-android")
+      credentials {
+        username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+        password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+      }
+    }
+  }
+}

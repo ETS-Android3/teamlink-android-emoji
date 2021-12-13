@@ -1,0 +1,102 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+//def buildVersion = System.env.LOGGER_BUILD_NUMBER == null ? 1: System.env.LOGGER_BUILD_NUMBER.toInteger()
+//def versionSuffix = "${EMOJI_MAJOR_CODE}.${EMOJI_MINOR_CODE}.${EMOJI_PATCH_CODE}.${buildVersion}"
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion as int
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdkVersion as int
+  }
+
+  resourcePrefix 'emoji_'
+}
+
+dependencies {
+  api "androidx.appcompat:appcompat:1.3.0"
+  api "androidx.cardview:cardview:1.0.0"
+}
+
+dependencies {
+  testImplementation rootProject.ext.testing.junit
+  testImplementation rootProject.ext.testing.assertJ
+  testImplementation "org.robolectric:robolectric:4.3.1"
+}
+
+//apply plugin: "com.vanniktech.maven.publish"
+//publishing {
+//  publications {
+//    aarArchive(MavenPublication) {
+//      groupId 'app.cybrook.emoji'
+//      artifactId 'teamlink-emoji'
+//      version versionSuffix
+//
+//      artifact("${project.buildDir}/outputs/aar/${project.name}-release.aar") {
+//        extension "aar"
+//      }
+//      pom.withXml {
+//        def pomXml = asNode()
+//        pomXml.appendNode('name', 'teamlink-emoji')
+//        pomXml.appendNode('description', 'TeamLink log component for Android')
+//        def dependencies = pomXml.appendNode('dependencies')
+//        configurations.getByName('releaseCompileClasspath').getResolvedConfiguration().getFirstLevelModuleDependencies().each {
+//          def dependency = dependencies.appendNode('dependency')
+//          dependency.appendNode('groupId', it.moduleGroup)
+//          dependency.appendNode('artifactId', it.moduleName)
+//          dependency.appendNode('version', it.moduleVersion)
+//        }
+//      }
+//    }
+//
+//  }
+//  repositories {
+//    if (project.hasProperty("customRepoUrl")) {
+//      maven {
+//        name 'customRepo'
+//        url customRepoUrl
+//        if (project.hasProperty("customRepoUsername")) {
+//          credentials {
+//            username customRepoUsername
+//            password customRepoPassword
+//          }
+//        }
+//      }
+//    }
+//  }
+//}
+
+
+def getVersionName = { ->
+  return "0.0.2" // 仓库版本
+}
+
+def getArtificatId = { ->
+  return "emoji" // 仓库Id
+}
+
+publishing {
+  publications {
+    bar(MavenPublication) {
+      groupId 'app.cybrook.emoji' // 仓库组Id
+      artifactId getArtificatId()
+      version getVersionName()
+      artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
+    }
+  }
+
+  repositories {
+    maven {
+      name = "customRepo"
+      url = uri("https://maven.pkg.github.com/cybrook/teamlink-next-android")
+      credentials {
+        username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+        password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+      }
+    }
+  }
+}

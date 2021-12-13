@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion as int
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdkVersion as int
+  }
+
+  resourcePrefix 'emoji'
+}
+
+dependencies {
+  api project(':emoji')
+  api "androidx.emoji:emoji-appcompat:1.1.0"
+}
+
+apply plugin: "com.vanniktech.maven.publish"
