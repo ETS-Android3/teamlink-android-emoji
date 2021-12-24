@@ -68,7 +68,7 @@ import static com.vanniktech.emoji.Utils.checkNotNull;
   @NonNull final EmojiVariantPopup variantPopup;
 
   final PopupWindow popupWindow;
-  final EditText editText;
+  EditText editText;
 
   boolean isPendingOpen;
   boolean isKeyboardOpen;
@@ -121,7 +121,7 @@ import static com.vanniktech.emoji.Utils.checkNotNull;
     }
   };
 
-  final PopupWindow.OnDismissListener onDismissListener = new PopupWindow.OnDismissListener() {
+  PopupWindow.OnDismissListener onDismissListener = new PopupWindow.OnDismissListener() {
     @Override public void onDismiss() {
       if (editText instanceof EmojiEditText && ((EmojiEditText) editText).isKeyboardInputDisabled()) {
         editText.clearFocus();
@@ -192,10 +192,13 @@ import static com.vanniktech.emoji.Utils.checkNotNull;
     });
   }
 
-  void stop() {
+  void release() {
     dismiss();
     context.getWindow().getDecorView().setOnApplyWindowInsetsListener(null);
     popupWindow.setOnDismissListener(null);
+    editText=null;
+    onDismissListener=null;
+    onEmojiPopupDismissListener=null;
   }
 
   @SuppressWarnings("PMD.CyclomaticComplexity") void updateKeyboardStateOpened(final int keyboardHeight) {
@@ -506,7 +509,7 @@ import static com.vanniktech.emoji.Utils.checkNotNull;
       final EmojiPopup popup = emojiPopup.get();
 
       if (popup != null) {
-        popup.stop();
+        popup.release();
       }
 
       emojiPopup.clear();
